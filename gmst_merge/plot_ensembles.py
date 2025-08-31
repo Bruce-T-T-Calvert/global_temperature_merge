@@ -21,7 +21,7 @@ import seaborn as sns
 import gmst_merge.dataset as ds
 
 
-def plot_ensemble(filename, to_compare, colours, linestyles, size):
+def plot_ensemble(filename, to_compare, colours, linestyles, size, linewidth=1.5):
     STANDARD_PARAMETER_SET = {
         'axes.axisbelow': False,
         'axes.labelsize': 20,
@@ -89,15 +89,17 @@ def plot_ensemble(filename, to_compare, colours, linestyles, size):
 
         for j in range(size):
 
-            values = annual[f'{j}']
-            values = values - np.mean(values[(annual.time >= 1981) & (annual.time <= 2010)])
+            values1 = annual[f'{j}']
+            values1 = values1 - np.mean(values1[(annual.time >= 1850) & (annual.time <= 1900)])
+            values2 = annual[f'{j}']
+            values2 = values2 - np.mean(values2[(annual.time >= 1981) & (annual.time <= 2010)])
 
             alf = 0.1
             if size == 10000:
                 alf = 0.01
 
-            axs[0].plot(annual.time, annual[f'{j}'], color='black', label=None, linestyle='solid', alpha=alf)
-            axs[1].plot(annual.time, values, color='black', label=None, linestyle='solid', alpha=alf)
+            axs[0].plot(annual.time, values1, color='black', label=None, linestyle='solid', linewidth=linewidth, alpha=alf)
+            axs[1].plot(annual.time, values2, color='black', label=None, linestyle='solid', linewidth=linewidth, alpha=alf)
 
         i += 1
 
@@ -105,6 +107,7 @@ def plot_ensemble(filename, to_compare, colours, linestyles, size):
 
     years = annual[:, 0]
     data = annual[:, 1:]
+    plt.gca().set_xlim(1850, np.max(years))
 
     print("One year")
     print(f'Median = {np.median(data[-1, :]):.2f}')
@@ -130,8 +133,8 @@ def plot_ensemble(filename, to_compare, colours, linestyles, size):
     axs[0].set_title('(a) Annual global mean temperatures, 1850-1900 baseline', loc='left', fontsize=20)
     axs[1].set_title('(b) Annual global mean temperatures, 1981-2010 baseline', loc='left', fontsize=20)
 
-    axs[0].set_ylim(-0.5, 1.9)
-    axs[1].set_ylim(-0.5 - 0.9, 1.9 - 0.9)
+    axs[0].set_ylim(np.min(values1)/0.25)*0.25,np.ceil(np.max(values1)/0.25)*0.25)
+    axs[1].set_ylim(np.min(values2)/0.25)*0.25,np.ceil(np.max(values2)/0.25)*0.25)
 
     plt.savefig(filename, bbox_inches='tight')
     plt.savefig(filename.replace('.png', '.svg'), bbox_inches='tight')
@@ -155,4 +158,4 @@ if __name__ == '__main__':
     colours = ['#fdc086', '#beaed4', '#7fc97f', '#555555', '#E65656']
     linestyles = ['solid']
 
-    plot_ensemble('Figures/final_full.png', to_compare, colours, linestyles, 10000)
+    plot_ensemble('Figures/final_full.png', to_compare, colours, linestyles, 10000, linewidth=0.2)

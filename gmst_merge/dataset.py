@@ -23,9 +23,6 @@ import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-from sklearn.cluster import KMeans
-from scipy.optimize import linear_sum_assignment
-
 from gmst_merge.useful_functions import balanced_kmeans
 
 
@@ -360,7 +357,7 @@ class Dataset:
     def thin_ensemble(self, n_thinned, rng):
         """
         Rank ensemble members according to the estimated long-term change and then, split into n_thinned equal
-        sized groups and pick the centre member from each.
+        sized groups and pick a random member from each.
 
         :param n_thinned: int
             number of ensemble members to return
@@ -503,7 +500,7 @@ class Dataset:
         :return: np.ndarray
             Array containing the years which first surpassed the threshold
         """
-        logic_board = np.argmax(self.data >= threshold, axis=0)
+        logic_board = np.argmax(np.subtract(self.data,np.mean(self.data[0:51],axis=0)) >= threshold, axis=0)
         passing_year = self.time[logic_board]
         return passing_year
 
@@ -601,7 +598,8 @@ class Dataset:
         """
         plt.figure(figsize=[16, 9])
         plt.plot(self.time, self.data, color='midnightblue', alpha=alpha)
-        plt.gca().set_ylim(-0.5, 1.75)
+        plt.gca().set_ylim(np.floor(np.min(self.data)/0.25)*0.25, np.ceil(np.max(self.data)/0.25)*0.25)
+        plt.gca().set_xlim(1850, self.end_year)
         plt.savefig(filename, dpi=300)
         plt.close()
 
@@ -648,6 +646,9 @@ class Dataset:
 
         q1, q2 = self.get_quantile_range(95)
         mn = self.get_ensemble_mean()
+        q1 = q1 - np.mean(q1[0:51])
+        q2 = q2 - np.mean(q2[0:51])
+        mn = mn - np.mean(mn[0:51])
 
         fig, axs = plt.subplots()
         fig.set_size_inches(16, 9)

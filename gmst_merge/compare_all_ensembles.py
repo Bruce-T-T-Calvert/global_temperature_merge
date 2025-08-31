@@ -99,9 +99,9 @@ def plot_comparisons(filename, to_compare, colours, linestyles):
     axs[1].set_title('(b) Standard deviation of annual global mean temperatures', loc='left', fontsize=20)
     axs[2].set_title('(c) Standard deviation of smoothed global mean temperatures', loc='left', fontsize=20)
 
-    axs[0].set_ylim(-0.35, 1.7)
-    axs[1].set_ylim(0.0, 0.16)
+    axs[1].set_ylim(0.0, 0.21)
     axs[2].set_ylim(0.0, 0.16)
+    plt.gca().set_xlim(1850, max(annual.time))
 
     plt.savefig(filename, bbox_inches='tight')
     plt.savefig(filename.replace('.png', '.svg'), bbox_inches='tight')

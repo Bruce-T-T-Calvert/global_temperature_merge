@@ -43,7 +43,7 @@ class MetaEnsembleFactory:
         self.tails = tails
         self.heads = heads
         self.latest_join_year = 1981
-        self.output_baseline = [1850, 1900]
+        self.output_baseline = [1981, 2010]
         self.overlap_period = 30
         self.random_overlap = True
         self.random_tree = False
@@ -73,10 +73,10 @@ class MetaEnsembleFactory:
         """
         Make a meta ensemble
 
-        :param n_meta_ensemble: int
-            Number of ensemble members to generate
         :param rng: Random Number Generator
             Numpy random number generator
+	:param end_year: int
+	Last calendar year
         :return: ds.Dataset
             Ensemble dataset
         """
@@ -117,9 +117,10 @@ class MetaEnsembleFactory:
             merged = ds.Dataset.join(tail, head, join_start_year, join_end_year)
             merged.anomalize(self.output_baseline[0], self.output_baseline[1])
 
-            meta_ensemble[:, i + 1] = merged.data[:, 0]
+            # the use of 1850-merged.get_start_year() is a robustness feature incase the translators process pre-1850 data (e.g., GloSAT)
+            meta_ensemble[:, i + 1] = merged.data[1850-merged.get_start_year():, 0]
             if i == 0:
-                meta_ensemble[:, 0] = merged.time[:]
+                meta_ensemble[:, 0] = merged.time[1850-merged.get_start_year():]
 
         output_dataset = ds.Dataset(meta_ensemble, 'meta_ensemble')
 

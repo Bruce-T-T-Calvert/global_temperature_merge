@@ -29,10 +29,11 @@ if __name__ == '__main__':
     ensemble_datasets = ["HadCRUT5", "NOAA_ensemble", "ERA5 ensemble"]
 
     regular_datasets = [
-        "NOAA v5.1", "NOAA v6", "GISTEMP", "CMST3", "COBE-STEMP3", "JRA-3Q"
+        "Berkeley Earth", "NOAA v5.1", "NOAA v6", "GISTEMP", "CMST3", "COBE-STEMP3", "JRA-3Q"
     ]
 
     matched_ensembles = {
+        "Berkeley Earth": ["HadCRUT5"],
         "NOAA v5.1": ["NOAA_ensemble"],
         "NOAA v6": ["NOAA_ensemble", "HadCRUT5"],
         "GISTEMP": ["HadCRUT5"],

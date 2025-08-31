@@ -102,12 +102,14 @@ def split_list(in_lst: list, n_splits: int, rng) -> list:
 
     # partition list randomly
     number_of_items = len(new_lst)
-    split_points = rng.choice(number_of_items - 2, n_splits - 1, replace=False) + 1
+    split_points = rng.choice(number_of_items - 1, n_splits - 1, replace=False) + 1
     split_points.sort()
-    result = np.split(new_lst, split_points)
-
-    # convert back to a regular list
-    result = [x.tolist() for x in result]
+    result = []
+    last_point = 0
+    for point in split_points:
+        result.append([new_lst[last_point:point]])
+        last_point = point
+    result.append([new_lst[last_point:]])
 
     return result
 
@@ -283,6 +285,7 @@ class FamilyTree:
             render_member = member
             render_member = render_member.replace('_HadCRUT5', ' (HadCRUT5)')
             render_member = render_member.replace('_NOAA_ensemble', ' (NOAA ensemble)')
+            render_member = render_member.replace('_ER5_ensemble', ' (ERA5 ensemble)')
             render_member = render_member.replace('_new_ensemble', ' et al.')
 
             axs.text(-0.1, i, render_member, ha='right', va='center', fontsize=20)
