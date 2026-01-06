@@ -282,8 +282,11 @@ class FamilyTree:
         for i, member in enumerate(all_members):
             render_member = member
             render_member = render_member.replace('_HadCRUT5', ' (HadCRUT5)')
-            render_member = render_member.replace('_NOAA_ensemble', ' (NOAA ensemble)')
+            render_member = render_member.replace('_NOAA_ensemble', ' (NOAA v5.0)')
             render_member = render_member.replace('_new_ensemble', ' et al.')
+            render_member = render_member.replace('_ERA5 ensemble', ' (ERA5)')
+            render_member = render_member.replace('ERA5 ensemble', 'ERA5')
+            render_member = render_member.replace('Kadow_ensemble', 'Kadow et al.')
 
             axs.text(-0.1, i, render_member, ha='right', va='center', fontsize=20)
             axs.plot([0, 1 + max_depth - all_member_depths[i]], [i, i], linewidth=3, color='black')

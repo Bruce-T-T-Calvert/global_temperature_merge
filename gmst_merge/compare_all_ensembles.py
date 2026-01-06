@@ -84,6 +84,11 @@ def plot_comparisons(filename, to_compare, colours, linestyles, climatology):
 
         label = key.upper()
 
+        label = label.replace("BASIC ", "")
+        label = label.replace("RANDOM RANDOM", "RANDOM")
+        label = label.replace("UNBALANCED UNBALANCED", "UNBALANCED")
+        label = label.replace("_", " ")
+
         axs[0].plot(annual.time, annual['mean'], color=colours[i], label=label, linestyle=linestyles[i])
         axs[0].plot(smoothed_annual.time, smoothed_annual['mean'], color=colours[i], linestyle=linestyles[i])
 
@@ -119,7 +124,8 @@ def plot_comparisons(filename, to_compare, colours, linestyles, climatology):
 if __name__ == '__main__':
 
     climatology = [1850, 1900]
-    climatology = [1981, 2010]
+    #climatology = [1981, 2010]
+
     insert = ''
     if climatology[0] != 1850 and climatology[1] != 1900:
         insert = f'_{climatology[0]}-{climatology[1]}'

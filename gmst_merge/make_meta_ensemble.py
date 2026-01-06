@@ -97,7 +97,8 @@ def run_experiment(experiment, data_dir, rng):
         meta_ensemble.plot_whole_ensemble(figure_dir / f'{tree}_clusters.png', alpha=1)
 
         # Calculate the smoothed ensemble
-        smoothed = meta_ensemble.lowess_smooth()
+        #smoothed = meta_ensemble.lowess_smooth()
+        smoothed = meta_ensemble.window_average()
 
         # Write out the files
         meta_ensemble.to_csv(output_dir / f'{tree}.csv')

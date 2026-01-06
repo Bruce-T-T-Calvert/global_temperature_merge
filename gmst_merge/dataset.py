@@ -40,7 +40,8 @@ def get_axis_lims(data, step=0.25):
     :return:
         float, float
     """
-    return np.floor(np.min(data) / step) * step, np.ceil(np.max(data) / step) * step
+    sel = ~np.isnan(data)
+    return np.floor(np.min(data[sel]) / step) * step, np.ceil(np.max(data[sel]) / step) * step
 
 
 class Metric:
@@ -376,6 +377,27 @@ class Dataset:
             smoothed_ensemble.data[:, i] = z[:]
 
         return smoothed_ensemble
+
+    def window_average(self):
+        """
+        Apply a n-year moving aveerage to all ensemble members
+
+        :return: Dataset
+            Dataset containing smoothed ensemble members
+        """
+        smoothed_ensemble = copy.deepcopy(self)
+
+        n = 20
+        halfn = int(n / 2)
+        ret = np.cumsum(self.data, axis=0, dtype=float)
+        ret[n:, :] = ret[n:, :] - ret[:-n, :]
+        ret = ret[n - 1:, :] / n
+
+        smoothed_ensemble.data[:,:] = np.nan
+        smoothed_ensemble.data[halfn:self.n_time+1-halfn, :] = ret[:, :]
+
+        return smoothed_ensemble
+
 
     def thin_ensemble(self, n_thinned, rng):
         """
